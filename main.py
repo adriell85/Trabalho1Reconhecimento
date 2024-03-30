@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from KNN import KNN
 
 def openIrisDataset():
     x = []
@@ -32,15 +33,13 @@ def split_data_randomly(data, percentage):
         second_group.append(data[int(indice)])
 
     return first_group, second_group
-def datasetSplitTrainTest(x,y):
+def datasetSplitTrainTest(x,y,percentageTrain):
 
     dataToSplit = [[x,y] for x,y in zip(x,y)]
 
-    percentageTrain = 20  # porcentagem de treino
+    percentageTrain = 100 - percentageTrain  # porcentagem de treino
 
     group1, group2 = split_data_randomly(dataToSplit, percentageTrain)
-    print("Grupo 1 (20%):", group1)
-    print("Grupo 2 (80%):", group2)
 
     xtrain, ytrain = zip(*[(group[0],group[1]) for group in group1])
     xtest, ytest = zip(*[(group[0], group[1]) for group in group2])
@@ -57,8 +56,7 @@ if __name__ =='__main__':
     out = openIrisDataset()
     x = out[0]
     y = out[1]
-    xtrain, ytrain, xtest, ytest = datasetSplitTrainTest(x,y, 80)
+    xtrain, ytrain, xtest, ytest = datasetSplitTrainTest(x,y,80)
 
+    KNN(xtrain, ytrain, xtest, ytest,5)
 
-
-    print(xtrain)
