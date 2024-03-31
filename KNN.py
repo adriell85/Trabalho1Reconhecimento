@@ -1,37 +1,34 @@
 import numpy as np
+from numba import njit
+
+@njit
 def calculateEuclideanDist(sample,attributes):
     diff =  np.array(attributes) - np.array(sample)
     elevate = np.sum((diff) ** 2)
     result = np.sqrt(elevate)
     return result
 
-def KNN(xtrain, ytrain, xtest, ytest,k):
+def KNN(xtrain, ytrain, xtest, k):
+    predicts = []
 
-    # etapa de treino
-    dataMemory = xtrain
-    labelMemory = ytrain
 
-    # etapa de treino
+    for testSample in xtest:
+        _dists = []
+        _distancesIndices = []
+        _KNNIndex = []
+        _KNNAttributes = []
 
-    distanceList = []
-
-    for test in xtest:
-        distanceList.append(calculateEuclideanDist(test,dataMemory))
-
-    originalOrdenationList = distanceList
-
-    distanceList.sort()
-
-    distanceList= distanceList[0:k]
-
-    distanceLabels = []
-
-    kLabels = []
-
-    for dist in distanceList:
-        distanceLabels.append(originalOrdenationList.index(dist))
-
-    for label in distanceLabels:
-            kLabels.append(ytest[label])
-    print(kLabels)
+        for trainSample in xtrain:
+            _dists.append(calculateEuclideanDist(testSample,trainSample))
+        for dist in _dists:
+            _distancesIndices.append([_dists.index(dist),dist])
+        _sortedDistancesIndices = sorted(_distancesIndices, key=lambda x: x[1])
+        for id in _sortedDistancesIndices[:k]:
+            _KNNIndex.append(id[0])
+        for KNNid in _KNNIndex:
+            _KNNAttributes.append(ytrain[KNNid])
+        uniqueLabels = set(_KNNAttributes)
+        votedLabel = max(uniqueLabels, key=_KNNAttributes.count)
+        predicts.append(votedLabel)
+    return predicts
 
