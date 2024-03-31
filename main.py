@@ -55,9 +55,33 @@ def datasetSplitTrainTest(x,y,percentageTrain):
     xtest, ytest = zip(*[(group[0], group[1]) for group in group1])
 
     return xtrain, ytrain, xtest, ytest
+def normalizeColumns(dataset):
+    dataset =np.array(dataset)
+    X_min = dataset.min(axis=0)
+    X_max = dataset.max(axis=0)
 
+    # Normalizando o dataset
+    datasetNormalized = (dataset - X_min) / (X_max - X_min)
+    return datasetNormalized
 def openColumnDataset():
-    print('Open Column!')
+    x = []
+    y = []
+    originalLabel = []
+    ConvertLabel = {
+        'DH': 0,
+        'SL': 1,
+        'NO': 2
+    }
+    with open("bases/vertebral+column/column_3C.dat") as file:
+        for line in file:
+            label = ConvertLabel[str(line.split(' ')[-1].strip())]
+            originalLabel.append(str(line.split(' ')[-1].strip()))
+            y.append(label)
+            x.append([float(feature) for feature in line.split(' ')[0:6]])
+        newX = normalizeColumns(x).tolist()
+    print('Column Dataset Opened!')
+
+    return [newX, y, np.unique(originalLabel)]
 
 
 def confusionMatrix(y_true, y_pred):
@@ -73,7 +97,6 @@ def confusionMatrix(y_true, y_pred):
 
 def plotConfusionMatrix(conf_matrix, class_names):
     fig, ax = plt.subplots(figsize=(10, 8))
-    # Seaborn adiciona uma camada de visualização a mais, mas é opcional
     sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=class_names, yticklabels=class_names)
     plt.ylabel('**True Label**')
     plt.xlabel('**Predicted Label**')
@@ -81,37 +104,27 @@ def plotConfusionMatrix(conf_matrix, class_names):
     plt.show()
 
 def plotDecisionSurface(xtrain,ytrain):
-    # superfície de decisão:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     xtrainSelected = np.array(xtrain)
-    xtrainSelected = xtrainSelected[:, [0, 1]]  # Ajuste isso conforme necessário
+    xtrainSelected = xtrainSelected[:, [0, 1]]
     xtrainSelected = xtrainSelected.tolist()
     xtrainSelected = tuple(xtrainSelected)
-
-
-    # Gerando o grid
     x_min = min([x[0] for x in xtrainSelected]) - 1
     x_max = max([x[0] for x in xtrainSelected]) + 1
     y_min = min([x[1] for x in xtrainSelected]) - 1
     y_max = max([x[1] for x in xtrainSelected]) + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
                          np.arange(y_min, y_max, 0.1))
-
     matrix = np.c_[xx.ravel(), yy.ravel()]
-
     matrix = matrix.tolist()
     matrix = tuple(matrix)
-    # Previsão para cada ponto no grid
     Z = KNN(xtrainSelected, ytrain, matrix, k=3)
     Z = np.array(Z)
     Z = Z.reshape(xx.shape)
-
     colors = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
-    # Plotando a superfície de decisão
     plt.contourf(xx, yy, Z, alpha=0.4, cmap=colors)
-    x_vals = [sample[0] for sample in xtrainSelected]  # Primeiro atributo
-    y_vals = [sample[1] for sample in xtrainSelected]  # Segundo atributo
+    x_vals = [sample[0] for sample in xtrainSelected]
+    y_vals = [sample[1] for sample in xtrainSelected]
     plt.scatter(x_vals, y_vals, c=ytrain, s=20, edgecolor='k', cmap=colors)
-    # plt.scatter(xtrainSelected[:, 0], xtrainSelected[:, 1], c=ytrain, s=20, edgecolor='k')
     plt.title('Superfície de Decisão do KNN')
     plt.xlabel('Atributo 1')
     plt.ylabel('Atributo 2')
@@ -119,7 +132,8 @@ def plotDecisionSurface(xtrain,ytrain):
 
 
 def KNNRuns():
-    out = openIrisDataset()
+    # out = openIrisDataset()
+    out = openColumnDataset()
     x = out[0]
     y = out[1]
     originalLabels = out[2]
@@ -134,7 +148,7 @@ def KNNRuns():
             ypredict = KNN(xtrain, ytrain, xtest, 5)
             confMatrix = confusionMatrix(ytest, ypredict)
             print('Confusion Matrix:\n', confMatrix)
-            # plotConfusionMatrix(confMatrix,originalLabels)
+            plotConfusionMatrix(confMatrix,originalLabels)
             accuracy = np.trace(confMatrix) / np.sum(confMatrix)
             print('ACC:', accuracy)
             arquivo.write("ACC: {}\n".format(accuracy))
