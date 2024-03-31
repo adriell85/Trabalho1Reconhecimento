@@ -3,6 +3,7 @@ import numpy as np
 from KNN import KNN
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib.colors import ListedColormap
 from numba import njit
 
 def openIrisDataset():
@@ -79,9 +80,45 @@ def plotConfusionMatrix(conf_matrix, class_names):
     plt.title('Confusion Matrix')
     plt.show()
 
+def plotDecisionSurface(xtrain,ytrain):
+    # superfície de decisão:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    xtrainSelected = np.array(xtrain)
+    xtrainSelected = xtrainSelected[:, [0, 1]]  # Ajuste isso conforme necessário
+    xtrainSelected = xtrainSelected.tolist()
+    xtrainSelected = tuple(xtrainSelected)
 
 
-if __name__ =='__main__':
+    # Gerando o grid
+    x_min = min([x[0] for x in xtrainSelected]) - 1
+    x_max = max([x[0] for x in xtrainSelected]) + 1
+    y_min = min([x[1] for x in xtrainSelected]) - 1
+    y_max = max([x[1] for x in xtrainSelected]) + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                         np.arange(y_min, y_max, 0.1))
+
+    matrix = np.c_[xx.ravel(), yy.ravel()]
+
+    matrix = matrix.tolist()
+    matrix = tuple(matrix)
+    # Previsão para cada ponto no grid
+    Z = KNN(xtrainSelected, ytrain, matrix, k=3)
+    Z = np.array(Z)
+    Z = Z.reshape(xx.shape)
+
+    colors = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
+    # Plotando a superfície de decisão
+    plt.contourf(xx, yy, Z, alpha=0.4, cmap=colors)
+    x_vals = [sample[0] for sample in xtrainSelected]  # Primeiro atributo
+    y_vals = [sample[1] for sample in xtrainSelected]  # Segundo atributo
+    plt.scatter(x_vals, y_vals, c=ytrain, s=20, edgecolor='k', cmap=colors)
+    # plt.scatter(xtrainSelected[:, 0], xtrainSelected[:, 1], c=ytrain, s=20, edgecolor='k')
+    plt.title('Superfície de Decisão do KNN')
+    plt.xlabel('Atributo 1')
+    plt.ylabel('Atributo 2')
+    plt.show()
+
+
+def KNNRuns():
     out = openIrisDataset()
     x = out[0]
     y = out[1]
@@ -93,18 +130,24 @@ if __name__ =='__main__':
         arquivo.write("Execução Iterações KNN.\n\n")
         for i in range(20):
             print('\nIteração {}\n'.format(i))
-            xtrain, ytrain, xtest, ytest = datasetSplitTrainTest(x,y,80)
-            ypredict = KNN(xtrain, ytrain, xtest,5)
-            confMatrix = confusionMatrix(ytest,ypredict)
-            print('Confusion Matrix:\n',confMatrix)
+            xtrain, ytrain, xtest, ytest = datasetSplitTrainTest(x, y, 80)
+            ypredict = KNN(xtrain, ytrain, xtest, 5)
+            confMatrix = confusionMatrix(ytest, ypredict)
+            print('Confusion Matrix:\n', confMatrix)
             # plotConfusionMatrix(confMatrix,originalLabels)
             accuracy = np.trace(confMatrix) / np.sum(confMatrix)
-            print('ACC:',accuracy)
+            print('ACC:', accuracy)
             arquivo.write("ACC: {}\n".format(accuracy))
             arquivo.write("Confusion Matrix: \n {} \n\n".format(confMatrix))
             accuracyList.append(i)
-        print('\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList),np.std(accuracyList)))
-        arquivo.write('\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList),np.std(accuracyList)))
+            plotDecisionSurface(xtrain, ytrain)
+        print('\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
+        arquivo.write(
+            '\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
+
+
+if __name__ =='__main__':
+    KNNRuns()
 
 
 

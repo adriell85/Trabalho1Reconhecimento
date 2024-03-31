@@ -30,5 +30,7 @@ def KNN(xtrain, ytrain, xtest, k):
         uniqueLabels = set(_KNNAttributes)
         votedLabel = max(uniqueLabels, key=_KNNAttributes.count)
         predicts.append(votedLabel)
+
+
     return predicts
 
