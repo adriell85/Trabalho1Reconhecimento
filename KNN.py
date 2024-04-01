@@ -38,26 +38,20 @@ def KNN(xtrain, ytrain, xtest, k):
 def DMC(xtrain, ytrain, xtest):
     predicts = []
     centroids = {}
-    unique_labels = np.unique(ytrain)
-
-    # Calcular os centróides de cada classe
-    for label in unique_labels:
+    uniqueLabels = np.unique(ytrain)
+    for label in uniqueLabels:
         xtrain = np.array(xtrain)
-        class_samples = xtrain[ytrain == label]
-        centroids[label] = np.mean(class_samples, axis=0)
-
+        classSamples = xtrain[ytrain == label]
+        centroids[label] = np.mean(classSamples, axis=0)
     for testSample in xtest:
-        closest_label = None
-        closest_distance = None
-
-        # Encontrar o centróide mais próximo
+        selectedLabel = None
+        closestDistance = None
         for label, centroid in centroids.items():
             centroid = centroid.tolist()
             dist = calculateEuclideanDist(testSample, centroid)
-            if closest_distance is None or dist < closest_distance:
-                closest_distance = dist
-                closest_label = label
-
-        predicts.append(closest_label)
+            if closestDistance is None or dist < closestDistance:
+                closestDistance = dist
+                selectedLabel = label
+        predicts.append(selectedLabel)
 
     return predicts
