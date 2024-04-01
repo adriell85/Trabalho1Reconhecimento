@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from KNN import KNN
+from KNN import KNN, DMC
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import ListedColormap
@@ -103,7 +103,7 @@ def plotConfusionMatrix(conf_matrix, class_names):
     plt.title('Confusion Matrix')
     plt.show()
 
-def plotDecisionSurface(xtrain,ytrain):
+def plotDecisionSurfaceKNN(xtrain,ytrain):
     xtrainSelected = np.array(xtrain)
     xtrainSelected = xtrainSelected[:, [0, 1]]
     xtrainSelected = xtrainSelected.tolist()
@@ -118,6 +118,33 @@ def plotDecisionSurface(xtrain,ytrain):
     matrix = matrix.tolist()
     matrix = tuple(matrix)
     Z = KNN(xtrainSelected, ytrain, matrix, k=3)
+    Z = np.array(Z)
+    Z = Z.reshape(xx.shape)
+    colors = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
+    plt.contourf(xx, yy, Z, alpha=0.4, cmap=colors)
+    x_vals = [sample[0] for sample in xtrainSelected]
+    y_vals = [sample[1] for sample in xtrainSelected]
+    plt.scatter(x_vals, y_vals, c=ytrain, s=20, edgecolor='k', cmap=colors)
+    plt.title('Superfície de Decisão do KNN')
+    plt.xlabel('Atributo 1')
+    plt.ylabel('Atributo 2')
+    plt.show()
+
+def plotDecisionSurfaceDMC(xtrain,ytrain):
+    xtrainSelected = np.array(xtrain)
+    xtrainSelected = xtrainSelected[:, [0, 1]]
+    xtrainSelected = xtrainSelected.tolist()
+    xtrainSelected = tuple(xtrainSelected)
+    x_min = min([x[0] for x in xtrainSelected]) - 1
+    x_max = max([x[0] for x in xtrainSelected]) + 1
+    y_min = min([x[1] for x in xtrainSelected]) - 1
+    y_max = max([x[1] for x in xtrainSelected]) + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                         np.arange(y_min, y_max, 0.1))
+    matrix = np.c_[xx.ravel(), yy.ravel()]
+    matrix = matrix.tolist()
+    matrix = tuple(matrix)
+    Z = DMC(xtrainSelected, ytrain, matrix)
     Z = np.array(Z)
     Z = Z.reshape(xx.shape)
     colors = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
@@ -154,15 +181,43 @@ def KNNRuns():
             arquivo.write("ACC: {}\n".format(accuracy))
             arquivo.write("Confusion Matrix: \n {} \n\n".format(confMatrix))
             accuracyList.append(i)
-            plotDecisionSurface(xtrain, ytrain)
+            plotDecisionSurfaceKNN(xtrain, ytrain)
         print('\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
         arquivo.write(
             '\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
 
 
-if __name__ =='__main__':
-    KNNRuns()
+def DMCRuns():
+    out = openIrisDataset()
+    # out = openColumnDataset()
+    x = out[0]
+    y = out[1]
+    originalLabels = out[2]
+    accuracyList = []
 
+    fileName = "DMCRuns.txt"
+    with open(fileName, 'w') as arquivo:
+        arquivo.write("Execução Iterações DMC.\n\n")
+        for i in range(20):
+            print('\nIteração {}\n'.format(i))
+            xtrain, ytrain, xtest, ytest = datasetSplitTrainTest(x, y, 80)
+            ypredict = DMC(xtrain, ytrain, xtest)
+            confMatrix = confusionMatrix(ytest, ypredict)
+            print('Confusion Matrix:\n', confMatrix)
+            plotConfusionMatrix(confMatrix,originalLabels)
+            accuracy = np.trace(confMatrix) / np.sum(confMatrix)
+            print('ACC:', accuracy)
+            arquivo.write("ACC: {}\n".format(accuracy))
+            arquivo.write("Confusion Matrix: \n {} \n\n".format(confMatrix))
+            accuracyList.append(i)
+            plotDecisionSurfaceDMC(xtrain, ytrain)
+        print('\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
+        arquivo.write(
+            '\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
+
+if __name__ =='__main__':
+    # KNNRuns()
+    DMCRuns()
 
 
 
