@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from KNN import KNN, DMC
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import ListedColormap
@@ -23,6 +25,42 @@ def openIrisDataset():
             x.append([float(feature) for feature in line.split(',')[0:4]])
     print('IRIS Dataset Opened!')
     return [x,y,np.unique(originalLabel)]
+
+
+def openColumnDataset():
+    x = []
+    y = []
+    originalLabel = []
+    ConvertLabel = {
+        'DH': 0,
+        'SL': 1,
+        'NO': 2
+    }
+    with open("bases/vertebral+column/column_3C.dat") as file:
+        for line in file:
+            label = ConvertLabel[str(line.split(' ')[-1].strip())]
+            originalLabel.append(str(line.split(' ')[-1].strip()))
+            y.append(label)
+            x.append([float(feature) for feature in line.split(' ')[0:6]])
+        newX = normalizeColumns(x).tolist()
+    print('Column Dataset Opened!')
+
+    return [newX, y, np.unique(originalLabel)]
+
+
+def openArtificialDataset():
+    x = []
+    y = []
+    originalLabel = []
+    with open("bases/artificial/artificial.txt") as file:
+        for line in file:
+            label = int(line.split(' ')[-1].strip())
+            originalLabel.append(str(line.split(' ')[-1].strip()))
+            y.append(label)
+            x.append([float(feature) for feature in line.split(' ')[0:2]])
+    print('Column Dataset Opened!')
+
+    return [x, y, np.unique(originalLabel)]
 
 
 
@@ -63,25 +101,7 @@ def normalizeColumns(dataset):
     # Normalizando o dataset
     datasetNormalized = (dataset - X_min) / (X_max - X_min)
     return datasetNormalized
-def openColumnDataset():
-    x = []
-    y = []
-    originalLabel = []
-    ConvertLabel = {
-        'DH': 0,
-        'SL': 1,
-        'NO': 2
-    }
-    with open("bases/vertebral+column/column_3C.dat") as file:
-        for line in file:
-            label = ConvertLabel[str(line.split(' ')[-1].strip())]
-            originalLabel.append(str(line.split(' ')[-1].strip()))
-            y.append(label)
-            x.append([float(feature) for feature in line.split(' ')[0:6]])
-        newX = normalizeColumns(x).tolist()
-    print('Column Dataset Opened!')
 
-    return [newX, y, np.unique(originalLabel)]
 
 
 def confusionMatrix(y_true, y_pred):
@@ -161,6 +181,7 @@ def plotDecisionSurfaceDMC(xtrain,ytrain):
 def KNNRuns():
     # out = openIrisDataset()
     out = openColumnDataset()
+    # out = openArtificialDataset()
     x = out[0]
     y = out[1]
     originalLabels = out[2]
@@ -188,8 +209,9 @@ def KNNRuns():
 
 
 def DMCRuns():
-    out = openIrisDataset()
+    # out = openIrisDataset()
     # out = openColumnDataset()
+    out = openArtificialDataset()
     x = out[0]
     y = out[1]
     originalLabels = out[2]
