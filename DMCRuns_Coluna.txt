@@ -1,0 +1,26 @@
+Execução Iterações DMC.
+
+ACC: 0.6290322580645161
+Confusion Matrix: 
+ [[10  4  1]
+ [ 1 18  8]
+ [ 2  7 11]] 
+
+ACC: 0.6774193548387096
+Confusion Matrix: 
+ [[ 5  0  2]
+ [ 2 27 10]
+ [ 5  1 10]] 
+
+ACC: 0.7903225806451613
+Confusion Matrix: 
+ [[12  0  1]
+ [ 1 24  4]
+ [ 3  4 13]] 
+
+ACC: 0.7419354838709677
+Confusion Matrix: 
+ [[15  0  2]
+ [ 1 20  4]
+ [ 3  6 11]] 
+
