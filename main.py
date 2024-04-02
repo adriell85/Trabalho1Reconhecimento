@@ -108,9 +108,7 @@ def normalizeColumns(dataset):
 
 
 def confusionMatrix(y_true, y_pred):
-    # Identifica o número de classes assumindo que y_true e y_pred contêm todas as possíveis classes
     num_classes = max(max(y_true), max(y_pred)) + 1
-    # Cria uma matriz de confusão vazia
     conf_matrix = np.zeros((num_classes, num_classes), dtype=int)
 
     for true, pred in zip(y_true, y_pred):
@@ -125,7 +123,6 @@ def plotConfusionMatrix(conf_matrix, class_names,classifierName,i,datasetName):
     plt.xlabel('**Predicted Label**')
     plt.title('Confusion Matrix')
     plt.savefig('Resultados_{}/{}/Matriz_de_Confusao_base_{}_Iteracao_{}.png'.format(classifierName,datasetName,datasetName,i))
-    # plt.show()
 
 
 
@@ -197,46 +194,7 @@ def plotDecisionSurface(xtrain,ytrain,classifierName,i,datasetName):
         fig.savefig('Resultados_{}/{}/Superficie_de_decisao_base_{}_Atributos_{}_Iteracao_{}.png'.format(classifierName,datasetName,datasetName,z,i))
         # plt.show()
 
-# def plotDecisionSurfaceDMC(xtrain,ytrain,classifierName,i,datasetName):
-#     atributesCombination = [
-#         [0, 1],
-#         [0, 2],
-#         [0, 3],
-#         [1, 2],
-#         [1, 3],
-#         [2, 3]
-#     ]
-#     for z in atributesCombination:
-#         xtrainSelected = np.array(xtrain)
-#         xtrainSelected = xtrainSelected[:, [0, 1]]
-#         xtrainSelected = xtrainSelected.tolist()
-#         xtrainSelected = tuple(xtrainSelected)
-#         x_min = min([x[0] for x in xtrainSelected]) - 1
-#         x_max = max([x[0] for x in xtrainSelected]) + 1
-#         y_min = min([x[1] for x in xtrainSelected]) - 1
-#         y_max = max([x[1] for x in xtrainSelected]) + 1
-#         xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-#                              np.arange(y_min, y_max, 0.1))
-#         matrix = np.c_[xx.ravel(), yy.ravel()]
-#         matrix = matrix.tolist()
-#         matrix = tuple(matrix)
-#         Z = DMC(xtrainSelected, ytrain, matrix)
-#         Z = np.array(Z)
-#         Z = Z.reshape(xx.shape)
-#         fig, ax = plt.subplots()
-#         colors = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
-#         plt.contourf(xx, yy, Z, alpha=0.4, cmap=colors)
-#         x_vals = [sample[0] for sample in xtrainSelected]
-#         y_vals = [sample[1] for sample in xtrainSelected]
-#         plt.scatter(x_vals, y_vals, c=ytrain, s=20, edgecolor='k', cmap=colors)
-#         plt.title('Superfície de Decisão do DMC')
-#         plt.xlabel('Atributo 1')
-#         plt.ylabel('Atributo 2')
-#         fig.savefig('Resultados_{}/{}/Superficie_de_decisao_base_{}_Atributos_{}_Iteracao_{}.png'.format(classifierName,
-#                                                                                                          datasetName,
-#                                                                                                          datasetName, z,
-#                                                                                                          i))
-#         # plt.show()
+
 
 
 def KNNRuns(base):
@@ -252,9 +210,6 @@ def KNNRuns(base):
     }
 
     out = convertRun[base]
-    # out = openIrisDataset()
-    # out = openColumnDataset()
-    # out = openArtificialDataset()
     x = out[0]
     y = out[1]
     originalLabels = out[2]
@@ -294,9 +249,6 @@ def DMCRuns(base):
     }
 
     out = convertRun[base]
-    # out = openIrisDataset()
-    # out = openColumnDataset()
-    # out = openArtificialDataset()
     x = out[0]
     y = out[1]
     originalLabels = out[2]
