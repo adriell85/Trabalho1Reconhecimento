@@ -154,10 +154,16 @@ def plotDecisionSurface(xtrain,ytrain,classifierName,i,datasetName):
         [3, 5],
         [4, 5]
     ]
+    atributesArtificial = [
+        [0,1]
+    ]
     if(datasetName=='Iris'):
         atributesCombination = atributesCombinationIris
-    else:
+    elif (datasetName == 'Coluna'):
         atributesCombination = atributesCombinationColumn
+    else:
+        atributesCombination = atributesArtificial
+
 
     for z in atributesCombination:
         xtrainSelected = np.array(xtrain)
@@ -197,7 +203,7 @@ def plotDecisionSurface(xtrain,ytrain,classifierName,i,datasetName):
 
 
 
-def KNNRuns(base):
+def KNNRuns(base,kValue):
     convertRun = {
         0: openIrisDataset(),
         1: openColumnDataset(),
@@ -215,13 +221,13 @@ def KNNRuns(base):
     originalLabels = out[2]
     accuracyList = []
 
-    fileName = "KNNRuns_{}.txt".format(convertDocName[base])
+    fileName = "KNNRuns_{}_K_{}.txt".format(convertDocName[base],kValue)
     with open(fileName, 'w') as arquivo:
         arquivo.write("Execução Iterações KNN {}.\n\n".format(convertDocName[base]))
         for i in range(20):
             print('\nIteração {}\n'.format(i))
             xtrain, ytrain, xtest, ytest = datasetSplitTrainTest(x, y, 80)
-            ypredict = KNN(xtrain, ytrain, xtest, 5)
+            ypredict = KNN(xtrain, ytrain, xtest, kValue)
             confMatrix = confusionMatrix(ytest, ypredict)
             print('Confusion Matrix:\n', confMatrix)
             plotConfusionMatrix(confMatrix,originalLabels,'KNN',i,convertDocName[base])
@@ -229,7 +235,7 @@ def KNNRuns(base):
             print('ACC:', accuracy)
             arquivo.write("ACC: {}\n".format(accuracy))
             arquivo.write("Confusion Matrix: \n {} \n\n".format(confMatrix))
-            accuracyList.append(i)
+            accuracyList.append(accuracy)
             plotDecisionSurface(xtrain, ytrain,'KNN',i,convertDocName[base])
         print('\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
         arquivo.write(
@@ -268,15 +274,19 @@ def DMCRuns(base):
             print('ACC:', accuracy)
             arquivo.write("ACC: {}\n".format(accuracy))
             arquivo.write("Confusion Matrix: \n {} \n\n".format(confMatrix))
-            accuracyList.append(i)
+            accuracyList.append(accuracy)
             plotDecisionSurface(xtrain, ytrain,'DMC',i,convertDocName[base])
         print('\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
         arquivo.write(
             '\nAcurácia média das 20 iterações: {:.2f} ± {:.2f}'.format(np.mean(accuracyList), np.std(accuracyList)))
 
 if __name__ =='__main__':
-    # KNNRuns(0)
-    DMCRuns(0)
+    # KNNRuns(2,3)
+    # KNNRuns(2, 5)
+    # KNNRuns(2, 7)
+    # KNNRuns(1)
+    DMCRuns(2)
+    # DMCRuns(1)
 
 
 

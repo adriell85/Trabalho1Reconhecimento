@@ -10,28 +10,23 @@ def calculateEuclideanDist(sample,attributes):
 
 def KNN(xtrain, ytrain, xtest, k):
     predicts = []
-
-
     for testSample in xtest:
-        _dists = []
-        _distancesIndices = []
-        _KNNIndex = []
-        _KNNAttributes = []
-
+        dists = []
+        distancesIndices = []
+        KNNIndex = []
+        KNNAttributes = []
         for trainSample in xtrain:
-            _dists.append(calculateEuclideanDist(testSample,trainSample))
-        for dist in _dists:
-            _distancesIndices.append([_dists.index(dist),dist])
-        _sortedDistancesIndices = sorted(_distancesIndices, key=lambda x: x[1])
-        for id in _sortedDistancesIndices[:k]:
-            _KNNIndex.append(id[0])
-        for KNNid in _KNNIndex:
-            _KNNAttributes.append(ytrain[KNNid])
-        uniqueLabels = set(_KNNAttributes)
-        votedLabel = max(uniqueLabels, key=_KNNAttributes.count)
+            dists.append(calculateEuclideanDist(testSample,trainSample))
+        for dist in dists:
+            distancesIndices.append([dists.index(dist),dist])
+        sortedDistancesIndices = sorted(distancesIndices, key=lambda x: x[1])
+        for id in sortedDistancesIndices[:k]:
+            KNNIndex.append(id[0])
+        for KNNid in KNNIndex:
+            KNNAttributes.append(ytrain[KNNid])
+        uniqueLabels = set(KNNAttributes)
+        votedLabel = max(uniqueLabels, key=KNNAttributes.count)
         predicts.append(votedLabel)
-
-
     return predicts
 
 

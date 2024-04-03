@@ -1,0 +1,104 @@
+Execução Iterações KNN Artificial.
+
+ACC: 1.0
+Confusion Matrix: 
+ [[7 0]
+ [0 1]] 
+
+ACC: 0.875
+Confusion Matrix: 
+ [[5 0]
+ [1 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[6 0]
+ [0 2]] 
+
+ACC: 0.875
+Confusion Matrix: 
+ [[6 0]
+ [1 1]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[6 0]
+ [0 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[6 0]
+ [0 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[7 0]
+ [0 1]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[7 0]
+ [0 1]] 
+
+ACC: 0.875
+Confusion Matrix: 
+ [[5 0]
+ [1 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[5 0]
+ [0 3]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[6 0]
+ [0 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[6 0]
+ [0 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[7 0]
+ [0 1]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[6 0]
+ [0 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[6 0]
+ [0 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[7 0]
+ [0 1]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[5 0]
+ [0 3]] 
+
+ACC: 0.875
+Confusion Matrix: 
+ [[5 0]
+ [1 2]] 
+
+ACC: 1.0
+Confusion Matrix: 
+ [[4 0]
+ [0 4]] 
+
+ACC: 0.875
+Confusion Matrix: 
+ [[7 0]
+ [1 0]] 
+
+
+Acurácia média das 20 iterações: 0.97 ± 0.05
