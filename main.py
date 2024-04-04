@@ -181,7 +181,7 @@ def plotDecisionSurface(xtrain,ytrain,classifierName,i,datasetName):
         matrix = tuple(matrix)
         if(classifierName=='KNN'):
             Z = KNN(xtrainSelected, ytrain, matrix, k=3)
-        else:
+        elif(classifierName=='DMC'):
             Z = DMC(xtrainSelected, ytrain, matrix)
         Z = np.array(Z)
         Z = Z.reshape(xx.shape)
@@ -191,9 +191,9 @@ def plotDecisionSurface(xtrain,ytrain,classifierName,i,datasetName):
         x_vals = [sample[0] for sample in xtrainSelected]
         y_vals = [sample[1] for sample in xtrainSelected]
         plt.scatter(x_vals, y_vals, c=ytrain, s=20, edgecolor='k', cmap=colors)
-        if (datasetName == 'Iris'):
+        if (classifierName == 'KNN'):
             plt.title('Superfície de Decisão do KNN base {}'.format(datasetName))
-        else:
+        elif(classifierName == 'DMC'):
             plt.title('Superfície de Decisão do DMC base {}'.format(datasetName))
         plt.xlabel('Atributo 1')
         plt.ylabel('Atributo 2')
@@ -283,10 +283,10 @@ def DMCRuns(base):
 if __name__ =='__main__':
     # KNNRuns(2,3)
     # KNNRuns(2, 5)
-    # KNNRuns(2, 7)
+    KNNRuns(2, 3)
     # KNNRuns(1)
-    DMCRuns(2)
-    # DMCRuns(1)
+    # DMCRuns(2)
+    # DMCRuns(0)
 
 
 
